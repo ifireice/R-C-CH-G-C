@@ -4,7 +4,7 @@ config_file="/etc/carbonapi/carbonapi.yaml"
 
 run() {
 
- /usr/bin/carbonapi \
+ /go/bin/carbonapi \
   -config  "${config_file}" 
 }
 

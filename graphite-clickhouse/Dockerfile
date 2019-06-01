@@ -1,7 +1,7 @@
-FROM golang:1.12.5 as builder
+FROM golang:1.12.5
 
 ENV GIT_REPO=https://github.com/lomik/graphite-clickhouse.git
-ENV GIT_TAG=v0.9.0
+ENV GIT_TAG=0.9.0
 
 WORKDIR /go/src/github.com/lomik
 
@@ -10,13 +10,12 @@ RUN git clone ${GIT_REPO} && \
     git checkout tags/${GIT_TAG} && \
     make
 
-
-FROM alpine:3.9
+RUN mkdir -p /go/bin && \
+    mv /go/graphite-clickhouse/graphite-clickhouse /go/bin/graphite-clickhouse && \
+    chmod 775 /go/bin/graphite-clickhouse
 
 RUN mkdir -p /data/graphite-clickhouse && \
     mkdir -p /etc/graphite-clickhouse
-
-COPY --from=builder /go/src/github.com/lomik/graphite-clickhouse/graphite-clickhouse /usr/bin/graphite-clickhouse
 
 # Add configs
 ADD ./conf/graphite-clickhouse.conf /etc/graphite-clickhouse/graphite-clickhouse.conf
@@ -29,5 +28,7 @@ COPY ./conf/run.sh /init
 EXPOSE 9090
 
 VOLUME /data/graphite-clickhouse
+
+#ENTRYPOINT ["/go/bin/graphite-clickhouse", "-config=/etc/graphite-clickhouse/graphite-clickhouse.conf"]
 
 CMD ["/init/run.sh"] 

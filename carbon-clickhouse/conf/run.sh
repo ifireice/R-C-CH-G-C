@@ -16,7 +16,7 @@ run() {
 
 #  create_config
 
- /usr/bin/carbon-clickhouse \
+ /go/bin/carbon-clickhouse \
   -config  "${config_file}" 
 }
 
