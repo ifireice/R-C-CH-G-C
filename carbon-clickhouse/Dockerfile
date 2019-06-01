@@ -3,13 +3,15 @@ FROM golang:1.12.5
 ENV GIT_REPO=https://github.com/lomik/carbon-clickhouse.git
 ENV GIT_TAG=v0.10.1
 
+WORKDIR /go/src/github.com/lomik
+
 RUN git clone ${GIT_REPO} && \
     cd carbon-clickhouse && \
     git checkout tags/${GIT_TAG} && \
     make
 
 RUN mkdir -p /go/bin && \
-    mv /go/carbon-clickhouse/carbon-clickhouse /go/bin/carbon-clickhouse && \
+    mv /go/src/github.com/lomik/carbon-clickhouse/carbon-clickhouse /go/bin/carbon-clickhouse && \
     chmod 775 /go/bin/carbon-clickhouse
 
 RUN mkdir -p /data/carbon-clickhouse && \

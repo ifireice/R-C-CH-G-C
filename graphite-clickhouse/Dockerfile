@@ -1,7 +1,7 @@
 FROM golang:1.12.5
 
 ENV GIT_REPO=https://github.com/lomik/graphite-clickhouse.git
-ENV GIT_TAG=0.9.0
+ENV GIT_TAG=v0.9.0
 
 WORKDIR /go/src/github.com/lomik
 
@@ -11,7 +11,7 @@ RUN git clone ${GIT_REPO} && \
     make
 
 RUN mkdir -p /go/bin && \
-    mv /go/graphite-clickhouse/graphite-clickhouse /go/bin/graphite-clickhouse && \
+    mv /go/src/github.com/lomik/graphite-clickhouse/graphite-clickhouse /go/bin/graphite-clickhouse && \
     chmod 775 /go/bin/graphite-clickhouse
 
 RUN mkdir -p /data/graphite-clickhouse && \
