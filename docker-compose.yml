@@ -1,0 +1,56 @@
+version: '3.3'
+
+services:
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+
+  clickhouse-server:
+    image: yandex/clickhouse-server:19.5.3.8 
+    hostname: ch1
+    volumes:
+      - ch_data:/var/lib/clickohuse
+      - ./clickhouse/conf:/etc/clickhouse-server
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  carbon-c-relay:
+    build: carbon-c-relay
+    hostname: carbon-c-relay
+    ports:
+      - 2003:2003
+    environment:
+      - CLICKHOUSE_HOST=carbon-clickhouse
+      - CLICKHOUSE_PORT=2003
+    depends_on:
+      - clickhouse-server
+
+  carbon-clickhouse:
+    build: carbon-clickhouse
+    hostname: carbon-clickhouse
+    depends_on:
+      - clickhouse-server
+
+  graphite-clickhouse:
+    build: graphite-clickhouse
+    hostname: graphite-clickhouse
+    ports:
+      - 9090:9090 
+    depends_on:
+      - clickhouse-server
+  
+  carbonapi:
+    build: carbonapi
+    hostname: carbonapi
+    ports:
+      - 8081:8081
+    depends_on:
+      - graphite-clickhouse
+
+volumes:
+  ch_data:
+

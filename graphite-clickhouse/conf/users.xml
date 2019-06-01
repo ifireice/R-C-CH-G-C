@@ -1,0 +1,2 @@
+<!-- Default is 262144 -->
+<max_query_size>10485760</max_query_size>
